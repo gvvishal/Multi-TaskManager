@@ -1,4 +1,4 @@
-package Security;
+package com.example.demo.Security;
 
 import com.example.demo.Entity.User;
 import com.example.demo.Repository.UserRepository;
