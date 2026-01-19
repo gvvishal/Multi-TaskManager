@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,22 +24,27 @@ public class TaskController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public TaskResponse create(@Valid @RequestBody TaskCreateRequest request) {
         return taskService.createTask(request);
     }
 
     @PutMapping("/{taskId}/status")
+    @PreAuthorize("hasRole('MANAGER')")
+
     public TaskResponse updateTaskStatus(@PathVariable Long taskId,
-                                 @Valid @RequestBody TaskStatusUpdateRequest request) {
-        return taskService.updateTaskStatus(taskId,request);
+                                         @Valid @RequestBody TaskStatusUpdateRequest request) {
+        return taskService.updateTaskStatus(taskId, request);
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{taskId}/assign/{userId}")
     public Task assignTask(@PathVariable Long taskId,
                            @PathVariable Long userId) {
         return taskService.assignTask(taskId, userId);
     }
 
+    @PreAuthorize("hasAnyRole('MANGER','USER')")
     @GetMapping("/user/{userId}")
     public Page<TaskResponse> getTasksForUser(
             @PathVariable Long userId,
@@ -49,6 +55,7 @@ public class TaskController {
         return taskService.getTasksForUser(userId, pageable);
     }
 
+    @PreAuthorize("hasAnyRole('MANGER','USER')")
 
     @GetMapping("/{taskId}")
     public Task getTaskById(@PathVariable Long taskId) {
